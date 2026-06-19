@@ -1,0 +1,22 @@
+# Замени CHANGE_ME на свой домен (A-запись → IP сервера)
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: app
+  namespace: app
+spec:
+  routes:
+    - match: Host(`CHANGE_ME.example.com`) && PathPrefix(`/api`)
+      kind: Rule
+      services:
+        - name: backend
+          port: 80
+    - match: Host(`CHANGE_ME.example.com`)
+      kind: Rule
+      services:
+        - name: frontend
+          port: 80
+  tls:
+    certResolver: letsencrypt
+    domains:
+      - main: CHANGE_ME.example.com

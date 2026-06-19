@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: hello-world
-  namespace: hello-world
+  name: frontend
+  namespace: app
   labels:
-    app: hello-world
+    app: frontend
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: hello-world
+      app: frontend
   template:
     metadata:
       labels:
-        app: hello-world
+        app: frontend
     spec:
       containers:
-        - name: nginx
-          image: nginx:1.27-alpine
+        - name: frontend
+          image: ghcr.io/heoh888/argocd-learning-frontend:latest
           ports:
             - containerPort: 80

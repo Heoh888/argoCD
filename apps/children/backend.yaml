@@ -1,23 +1,20 @@
-# Наше приложение — ArgoCD синкает из Git (шаг 5)
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: hello-world
+  name: backend
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: REPO_URL
+    repoURL: https://github.com/Heoh888/argoCD.git
     targetRevision: HEAD
-    path: manifests/hello-world
+    path: manifests/backend
   destination:
     server: https://kubernetes.default.svc
-    namespace: hello-world
+    namespace: app
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
-    syncOptions:
-      - CreateNamespace=true

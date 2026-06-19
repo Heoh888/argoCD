@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>ArgoCD Learning App</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
+    h1 { color: #2563eb; }
+    #status { padding: 12px; border-radius: 8px; background: #f1f5f9; }
+  </style>
+</head>
+<body>
+  <h1>Frontend</h1>
+  <p>Запрос к backend через Traefik:</p>
+  <div id="status">загрузка...</div>
+  <script>
+    fetch("/api/hello")
+      .then(r => r.json())
+      .then(d => document.getElementById("status").textContent = d.message)
+      .catch(e => document.getElementById("status").textContent = "ошибка: " + e);
+  </script>
+</body>
+</html>
