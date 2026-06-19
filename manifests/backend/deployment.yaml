@@ -23,7 +23,7 @@ spec:
       containers:
         - name: backend
           # Версия: services/backend/VERSION → CI обновляет image
-          image: ghcr.io/heoh888/argocd-backend:1.0.1
+          image: ghcr.io/heoh888/argocd-backend:1.0.2
           ports:
             - containerPort: 8080
           envFrom:
