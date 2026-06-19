@@ -20,3 +20,8 @@ spec:
           image: ghcr.io/heoh888/argocd-backend:7d3d7798be4048f19170ebd66a697b6eddc82754
           ports:
             - containerPort: 8080
+          envFrom:
+            # только секреты — публичный конфиг в services/backend/config.py
+            - secretRef:
+                name: backend-secret
+                optional: true
