@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ghcr.io/heoh888/argocd-frontend:438d6f3967a9fe992781c6a202da39d9a8e4d2ef
+          image: ghcr.io/heoh888/argocd-frontend:551496b397393d00832bb90671dc3c48d8826b29
           ports:
             - containerPort: 80
