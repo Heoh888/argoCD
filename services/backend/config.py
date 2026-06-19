@@ -2,13 +2,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    # Публичные — дефолты в коде
     SERVICE_NAME: str = "backend"
-    VERSION: str = "1.0.0"
     DEBUG: bool = False
     GREETING_MESSAGE: str = "Привет от backend!"
 
-    # Секреты — поля = ключи в secrets/backend.secret.env → K8s Secret
+    # Версия релиза — из services/backend/VERSION (CI → image tag)
+    APP_VERSION: str = "0.0.0"
+
     API_KEY: str = ""
     DATABASE_URL: str = ""
     RABBITMQ_USER: str = ""

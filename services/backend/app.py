@@ -10,7 +10,7 @@ def health():
     return jsonify(
         status="ok",
         service=settings.SERVICE_NAME,
-        version=settings.VERSION,
+        version=settings.APP_VERSION,
         debug=settings.DEBUG,
     )
 
@@ -20,7 +20,7 @@ def hello():
     return jsonify(
         message=settings.GREETING_MESSAGE,
         service=settings.SERVICE_NAME,
-        version=settings.VERSION,
+        version=settings.APP_VERSION,
     )
 
 
@@ -28,7 +28,7 @@ def hello():
 def config_preview():
     return jsonify(
         service=settings.SERVICE_NAME,
-        version=settings.VERSION,
+        version=settings.APP_VERSION,
         debug=settings.DEBUG,
         greeting=settings.GREETING_MESSAGE,
         api_key_set=bool(settings.API_KEY),

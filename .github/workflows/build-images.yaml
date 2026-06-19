@@ -20,6 +20,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Read versions
+        id: versions
+        run: |
+          FRONTEND_VERSION=$(tr -d '[:space:]' < services/frontend/VERSION)
+          BACKEND_VERSION=$(tr -d '[:space:]' < services/backend/VERSION)
+          echo "frontend=${FRONTEND_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "backend=${BACKEND_VERSION}" >> "$GITHUB_OUTPUT"
+
       - uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -34,9 +42,9 @@ jobs:
           context: services/frontend
           platforms: linux/amd64
           push: true
-          tags: |
-            ${{ env.FRONTEND_IMAGE }}:${{ github.sha }}
-            ${{ env.FRONTEND_IMAGE }}:latest
+          tags: ${{ env.FRONTEND_IMAGE }}:${{ steps.versions.outputs.frontend }}
+          build-args: |
+            APP_VERSION=${{ steps.versions.outputs.frontend }}
 
       - name: Build and push backend
         uses: docker/build-push-action@v6
@@ -44,15 +52,16 @@ jobs:
           context: services/backend
           platforms: linux/amd64
           push: true
-          tags: |
-            ${{ env.BACKEND_IMAGE }}:${{ github.sha }}
-            ${{ env.BACKEND_IMAGE }}:latest
+          tags: ${{ env.BACKEND_IMAGE }}:${{ steps.versions.outputs.backend }}
+          build-args: |
+            APP_VERSION=${{ steps.versions.outputs.backend }}
 
       - name: Update image tags in manifests
         run: |
-          SHA="${{ github.sha }}"
-          sed -i "s|image: ghcr.io/heoh888/argocd-frontend:.*|image: ghcr.io/heoh888/argocd-frontend:${SHA}|" manifests/frontend/deployment.yaml
-          sed -i "s|image: ghcr.io/heoh888/argocd-backend:.*|image: ghcr.io/heoh888/argocd-backend:${SHA}|" manifests/backend/deployment.yaml
+          FV="${{ steps.versions.outputs.frontend }}"
+          BV="${{ steps.versions.outputs.backend }}"
+          sed -i "s|image: ghcr.io/heoh888/argocd-frontend:.*|image: ghcr.io/heoh888/argocd-frontend:${FV}|" manifests/frontend/deployment.yaml
+          sed -i "s|image: ghcr.io/heoh888/argocd-backend:.*|image: ghcr.io/heoh888/argocd-backend:${BV}|" manifests/backend/deployment.yaml
 
       - name: Commit manifest updates
         run: |
@@ -60,5 +69,5 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add manifests/frontend/deployment.yaml manifests/backend/deployment.yaml
           git diff --cached --quiet && echo "No manifest changes" && exit 0
-          git commit -m "ci: update image tags to ${{ github.sha }}"
+          git commit -m "ci: deploy frontend ${{ steps.versions.outputs.frontend }}, backend ${{ steps.versions.outputs.backend }}"
           git push

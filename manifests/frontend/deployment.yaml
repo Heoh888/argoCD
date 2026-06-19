@@ -17,6 +17,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ghcr.io/heoh888/argocd-frontend:9ad4ce30686171b2dae2ef4b6a0e5fbe657f9705
+          # Версия: services/frontend/VERSION → CI обновляет image
+          image: ghcr.io/heoh888/argocd-frontend:1.0.0
           ports:
             - containerPort: 80
