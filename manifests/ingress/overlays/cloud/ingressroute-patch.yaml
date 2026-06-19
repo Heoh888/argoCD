@@ -6,12 +6,12 @@ metadata:
   namespace: app
 spec:
   routes:
-    - match: Host(`CHANGE_ME.example.com`) && PathPrefix(`/api`)
+    - match: Host(`argo.iivdele.ru`) && PathPrefix(`/api`)
       kind: Rule
       services:
         - name: backend
           port: 80
-    - match: Host(`CHANGE_ME.example.com`)
+    - match: Host(`argo.iivdele.ru`)
       kind: Rule
       services:
         - name: frontend
@@ -19,4 +19,4 @@ spec:
   tls:
     certResolver: letsencrypt
     domains:
-      - main: CHANGE_ME.example.com
+      - main: argo.iivdele.ru

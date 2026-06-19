@@ -38,7 +38,7 @@ spec:
         certificatesResolvers:
           letsencrypt:
             acme:
-              email: you@example.com
+              email: a.khodakow@gmail.com
               storage: /data/acme.json
               httpChallenge:
                 entryPoint: web
