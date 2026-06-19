@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
         - name: backend
-          image: ghcr.io/heoh888/argocd-backend:723d96f44eb78499d801c6e9c96fcb566c054139
+          image: ghcr.io/heoh888/argocd-backend:7d3d7798be4048f19170ebd66a697b6eddc82754
           ports:
             - containerPort: 8080
