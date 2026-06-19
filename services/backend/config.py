@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 class Settings(BaseSettings):
     SERVICE_NAME: str = "backend"
     DEBUG: bool = False
-    GREETING_MESSAGE: str = "Привет от backend!"
+    GREETING_MESSAGE: str = "Привет от backend версия 2!"
 
     # Версия релиза — из services/backend/VERSION (CI → image tag)
     APP_VERSION: str = "0.0.0"
