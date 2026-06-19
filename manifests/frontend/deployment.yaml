@@ -17,6 +17,6 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ghcr.io/heoh888/argocd-learning-frontend:latest
+          image: ghcr.io/heoh888/argocd-frontend:latest
           ports:
             - containerPort: 80
