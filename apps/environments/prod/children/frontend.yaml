@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ingress
+  name: frontend
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -9,8 +9,8 @@ spec:
   project: default
   source:
     repoURL: https://github.com/Heoh888/argoCD.git
-    targetRevision: HEAD
-    path: manifests/ingress/overlays/cloud
+    targetRevision: main
+    path: manifests/frontend/overlays/prod
   destination:
     server: https://kubernetes.default.svc
     namespace: app
@@ -18,3 +18,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

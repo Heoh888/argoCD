@@ -1,6 +1,9 @@
 .DS_Store
 *.tmp
 
+secrets/*/backend.secret.env
+!secrets/*/backend.secret.env.example
+
 # Локальные секреты (не в Git)
 secrets/*.secret.env
 !secrets/*.secret.env.example

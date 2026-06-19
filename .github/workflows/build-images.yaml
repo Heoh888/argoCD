@@ -2,7 +2,7 @@ name: Build and deploy images
 
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
     paths:
       - 'services/**'
       - '.github/workflows/build-images.yaml'
@@ -19,6 +19,15 @@ jobs:
       packages: write
     steps:
       - uses: actions/checkout@v4
+
+      - name: Overlay from branch
+        id: env
+        run: |
+          if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
+            echo "overlay=prod" >> "$GITHUB_OUTPUT"
+          else
+            echo "overlay=dev" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Read versions
         id: versions
@@ -56,18 +65,20 @@ jobs:
           build-args: |
             APP_VERSION=${{ steps.versions.outputs.backend }}
 
-      - name: Update image tags in manifests
+      - name: Sync manifests after image push
         run: |
+          OVERLAY="${{ steps.env.outputs.overlay }}"
           FV="${{ steps.versions.outputs.frontend }}"
           BV="${{ steps.versions.outputs.backend }}"
-          sed -i "s|image: ghcr.io/heoh888/argocd-frontend:.*|image: ghcr.io/heoh888/argocd-frontend:${FV}|" manifests/frontend/deployment.yaml
-          sed -i "s|image: ghcr.io/heoh888/argocd-backend:.*|image: ghcr.io/heoh888/argocd-backend:${BV}|" manifests/backend/deployment.yaml
+          tr -d '[:space:]' < services/backend/VERSION > "manifests/backend/overlays/${OVERLAY}/image-tag.txt"
+          tr -d '[:space:]' < services/frontend/VERSION > "manifests/frontend/overlays/${OVERLAY}/image-tag.txt"
+          echo "${OVERLAY} frontend=${FV} backend=${BV} $(date -u +%Y-%m-%dT%H:%M:%SZ)" > manifests/.deploy-trigger
 
       - name: Commit manifest updates
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add manifests/frontend/deployment.yaml manifests/backend/deployment.yaml
+          git add manifests/.deploy-trigger manifests/backend/overlays manifests/frontend/overlays
           git diff --cached --quiet && echo "No manifest changes" && exit 0
-          git commit -m "ci: deploy frontend ${{ steps.versions.outputs.frontend }}, backend ${{ steps.versions.outputs.backend }}"
+          git commit -m "ci(${{ steps.env.outputs.overlay }}): images ready frontend ${{ steps.versions.outputs.frontend }}, backend ${{ steps.versions.outputs.backend }}"
           git push

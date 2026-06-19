@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+configMapGenerator:
+  - name: frontend-version
+    files:
+      - tag=image-tag.txt
+    options:
+      disableNameSuffixHash: true
+
+replacements:
+  - source:
+      kind: ConfigMap
+      name: frontend-version
+      fieldPath: data.tag
+    targets:
+      - select:
+          kind: Deployment
+          name: frontend
+        fieldPaths:
+          - spec.template.spec.containers.[name=frontend].image
+        options:
+          delimiter: ":"
+          index: 1

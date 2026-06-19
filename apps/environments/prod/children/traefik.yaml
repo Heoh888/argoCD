@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://traefik.github.io/charts
+    chart: traefik
+    targetRevision: 33.2.1
+    helm:
+      valuesObject:
+        deployment:
+          replicas: 1
+        ports:
+          web:
+            port: 80
+            exposedPort: 80
+            expose:
+              default: true
+          websecure:
+            port: 443
+            exposedPort: 443
+            expose:
+              default: true
+        ingressRoute:
+          dashboard:
+            enabled: false
+        providers:
+          kubernetesCRD:
+            enabled: true
+        persistence:
+          enabled: true
+          size: 1Gi
+        certificatesResolvers:
+          letsencrypt:
+            acme:
+              email: a.khodakow@gmail.com
+              storage: /data/acme.json
+              httpChallenge:
+                entryPoint: web
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: traefik
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

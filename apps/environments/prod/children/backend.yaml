@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root
+  name: backend
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -9,13 +9,11 @@ spec:
   project: default
   source:
     repoURL: https://github.com/Heoh888/argoCD.git
-    targetRevision: HEAD
-    path: apps/children
-    directory:
-      recurse: true
+    targetRevision: main
+    path: manifests/backend/overlays/prod
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: app
   syncPolicy:
     automated:
       prune: true
