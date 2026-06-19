@@ -10,7 +10,7 @@ def health():
 
 @app.get("/api/hello")
 def hello():
-    return jsonify(message="Hello from backend!")
+    return jsonify(message="Привет от backend!")
 
 
 if __name__ == "__main__":
